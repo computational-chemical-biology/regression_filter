@@ -5,8 +5,6 @@
   <img src="https://github.com/computational-chemical-biology/blob/main/img/logo.png" alt="logo"/>
 </p>
 
-ChemWalker is a python package to propagate spectral library match identities through candidate structures provided by _in silico_ fragmentation, using [random walk](https://github.com/jinhongjung/pyrwr).
-
 ## Installation
 
 Install conda
