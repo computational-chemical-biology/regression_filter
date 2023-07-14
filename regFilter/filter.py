@@ -50,12 +50,19 @@ class Filter:
         self.y = y
 
 
-    def filterReg(self, feat_idx, r2=0.9, sig='-',
-                  plot=False):
+    def filterReg(self, feat_idx, npts = None,
+                  r2=0.9, sig='-', plot=False):
         X = self.feat_area[feat_idx].to_numpy()
         y = self.y
 
         X = X.reshape(-1, 1)
+
+        if npts is not None:
+            nzero = X[:,0] > 0
+            if nzero.sum() >= npts:
+                X = X[nzero,:]
+                y = y[nzero,:]
+
         reg = LinearRegression()
         reg = LinearRegression()
         reg.fit(X, y)
@@ -86,8 +93,8 @@ class Filter:
                 return 0
 
 
-    def filterFeatures(self, r2=0.9, sig='-'):
-        sel = self.feat_area.apply(lambda a: self.filterReg(a.name, r2=r2, sig=sig))
+    def filterFeatures(self, npts=None, r2=0.9, sig='-'):
+        sel = self.feat_area.apply(lambda a: self.filterReg(a.name, npts=npts, r2=r2, sig=sig))
 
         self.sel = sel
 
