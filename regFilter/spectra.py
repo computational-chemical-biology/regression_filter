@@ -146,15 +146,18 @@ def overlayXIC(fnames, path, mz, rt, fsz,
 
     cdict = {}
     for i in range(len(fnames)):
-        cdict[re.sub('_MS1.*', '', fnames[i]).split('_')[2]] = i
+        cdict[re.sub('_POS_1-...*_', '_', fnames[i]).split('_')[2]] = i
 
     for k,v in cdict.items():
         cdict[k] = cm(v/3*3.0/len(cdict))
 
     for fn in fnames:
-        leg = re.sub('_MS1.*', '', fn)
+        leg = re.sub('_POS_1-...*_', '_', fn)
         cid = leg.split('_')[2]
-        fn.replace('mzXML', 'mzML')
+        try:
+            fn.replace('mzXML', 'mzML')
+        except:
+            print('Not a .mzXML file')
         exp = loadExp(f'{path}/{fn}')
         tic = getTIC(exp)
         xic = getXIC(mz, rt, tic, **kwargs)
@@ -164,5 +167,6 @@ def overlayXIC(fnames, path, mz, rt, fsz,
     plt.legend(fontsize=fsz)
     if save:
         plt.savefig(out)
+        plt.show()
     else:
         plt.show()
