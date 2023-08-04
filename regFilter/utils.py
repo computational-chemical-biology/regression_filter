@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 import warnings
 
 def matchFeats(query, ref, ppm=15, rtabs=20):
