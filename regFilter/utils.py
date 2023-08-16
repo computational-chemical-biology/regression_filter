@@ -1,4 +1,5 @@
 import pandas as pd
+from pyopenms import *
 import matplotlib.pyplot as plt
 import warnings
 
@@ -111,3 +112,21 @@ def plotMS2cube(chrom_obj):
     ax.set_xlabel('m/z')
     ax.set_ylabel('Retention time')
     ax.set_zlabel('Intensity')
+
+def getEventsWithRep(dr, lst):
+    fls = [x for x in os.listdir(dr) if 'mzML' in x]
+    event_list = []
+    if len(fls):
+        print('Found %s mzML files in the directory.' % len(fls))
+    else:
+        raise Exception("No mzML files detected")
+    for i in range(len(fls)):
+        fl = fls[i]
+        frags = MSExperiment()
+        MzMLFile().load(f"{dr}/{fl}", frags)
+        mean_frags = eventSummary(lst, frags)
+        print('Found %s ions for replicate %s' % (len(mean_frags), i+1))
+        mean_frags['replicate'] = i+1
+        event_list.append(mean_frags)
+
+    return pd.concat(event_list)
