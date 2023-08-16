@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from pyopenms import *
 import matplotlib.pyplot as plt
