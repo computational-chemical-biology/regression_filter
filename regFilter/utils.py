@@ -131,3 +131,26 @@ def getEventsWithRep(dr, lst):
         event_list.append(mean_frags)
 
     return pd.concat(event_list)
+
+def generateUID(comparison_table, reference_table, regFilterFiltered):
+    comparison_table['uid'] = comparison_table.apply(lambda a: f"{str(a['q-m/z']).split('.')[0]}_{str(a['q-rt']).split('.')[0]}",
+                                                     axis=1)
+    print(f"Reference table has {reference_table.shape[0]} entries.")
+    reference_table_uid = pd.merge(reference_table[['row ID', 'row m/z', 'row retention time']],
+                              comparison_table[['row ID', 'uid']], on='row ID', how='left')
+    reference_table_uid.loc[reference_table_uid.uid.isna(), 'uid'] = reference_table_uid.apply(lambda a: f"{str(a['row m/z']).split('.')[0]}_{str(a['row retention time']).split('.')[0]}",
+                                                                                               axis=1)[reference_table_uid.uid.isna()]
+    print(f"Reference table with unique IDs has {reference_table_uid.shape[0]} entries, including duplications.")
+    print(f"Reference table had {len(reference_table_uid.uid.unique())} unique IDs.")
+    print(f"regFilterFiltered table has {regFilterFiltered.feat_tab[regFilterFiltered.sel==1].shape[0]} entries.")
+    regFilterFiltered_uid = pd.merge(regFilterFiltered.feat_tab.loc[regFilterFiltered.sel==1,
+                                                            ['row ID', 'row m/z', 'row retention time']],
+                        comparison_table[['q-id', 'uid']], left_on='row ID', right_on='q-id',
+                        how='left')
+
+    regFilterFiltered_uid.loc[regFilterFiltered_uid.uid.isna(), 'uid'] = regFilterFiltered_uid.apply(lambda a: f"{str(a['row m/z']).split('.')[0]}_{str(a['row retention time']).split('.')[0]}",
+                                                                                                     axis=1)[regFilterFiltered_uid.uid.isna()]
+    print(f"regFilterFiltered table with unique IDs has {regFilterFiltered_uid.shape[0]} entries, including duplications.")
+    print(f"regFilterFiltered table had {len(regFilterFiltered_uid.uid.unique())} unique IDs.")
+
+    return reference_table_uid, regFilterFiltered_uid
