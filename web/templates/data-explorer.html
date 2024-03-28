@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    div.hidden {
+      visibility: hidden;
+    }
+  </style>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    function cb(selection) {
+      $.getJSON({
+        url: "{{url_for('chromatogram')}}", data: { 'data': selection }, success: function (result) {
+          Plotly.newPlot('bar', result, {staticPlot: true});;
+        }
+      });
+      var div = document.getElementById('buttonContainer');
+      div.style.visibility = 'visible';
+    }
+  </script>
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endwith %}
+{% block body %}{% endblock %}
+<body style="font-family:arial, sans-serif">
+  <h1>Exploring spectral list</h1>
+  <center>
+  <hr>
+  <form class="form-inline" method="POST" action="{{ url_for('mapFilter') }}">
+    <div class="form-group">
+    <div class="input-group">
+    <span class="input-group-addon">Please select mzML file</span>
+    <br>
+    <select name="mzxml" class="selectpicker form-control">
+    <option value="">--Select--</option>
+    {% for o in mzmls %}
+      <option value="{{ o.name }}">{{ o.name }}</option>
+    {% endfor %}
+    </select>
+    <br>
+    <span class="input-group-addon">Please select SPL file</span>
+    <br>
+    <select name="spl" class="selectpicker form-control">
+    <option value="">--Select--</option>
+    {% for s in spls %}
+      <option value="{{ s.name }}">{{ s.name }}</option>
+    {% endfor %}
+    </select>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-default">Go</button>
+    </div>
+  </form>
+  <hr>
+  </center>
+
+  <div id="chart" class="chart"></div>
+  <div id="bar" class="bar"></div>
+  <div id="buttonContainer" class="hidden" style="text-align: center">
+    <form action="{{ url_for('save2MGF') }}"  method="post">
+      <label for="title">Save to MGF file</label>
+      <br>
+      <input type="text" name="idx" id="mgf" value="replace"></input>
+      <br>
+      <input type="text" name="file" id='mzml' value="replace"></input>
+      <br>
+      <input type="text" name="scan" placeholder="Scan number"></input>
+      <br>
+      <input type="text" name="gnps" placeholder="gnps2 fbmn taskid"></input>
+      <br>
+      <input type="text" name="chw" placeholder="chemwalker taskid"></input>
+      <br>
+      <input type="text" name="mgffile" placeholder="MGF file to save to"></input>
+      <br>
+      <button type="submit">Save to MGF</button>
+    </form>
+</div>
+</body>
+
+<!-- Line plot -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    d = {{ graphJSON | safe }};
+    m = {{ mzxml | safe }};
+    var config = {displayModeBar: false};
+    var chart = document.getElementById('chart');
+    Plotly.react('chart', d, {});
+    chart.on('plotly_click', function(data){
+            console.log(data.points[0].x);
+            document.getElementById('mgf').setAttribute('value', data.points[0].x);
+            document.getElementById('mzml').setAttribute('value', m.mzxml);
+            cb(data.points[0].x);
+            });
+</script>
+
+</html>
+
+
