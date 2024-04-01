@@ -37,6 +37,7 @@ def save2MGF():
         spectrum['scan'] = request.form['scan']
         spectrum['gnps'] = request.form['gnps']
         spectrum['chw'] = request.form['chw']
+        spectrum['inchi'] = request.form['inchi']
         with open(f"static/dbs/{request.form['mgffile']}", 'a+') as f:
             f.write(get_mgf_string(spectrum))
     flash('You successfully saved the spectrum')
@@ -71,8 +72,15 @@ def mapFilter():
     df = pd.DataFrame(dfdict)
     fig = px.line(df, x="rt", y="int", title=f'TIC')
 
+    info = []
+    for k,v in ms2dict.items():
+        info.append([k, v['parent'], v['rt']])
+
+    dinfo = pd.DataFrame(info, columns=['ms1', 'mz', 'rt'])
+
     lst = pd.read_csv(f'static/spls/{spl}')
-    pts = getPoints(df, lst)
+    rt = getPoints(dinfo, lst)
+    pts = df[df.rt.isin(rt)]
     fig.add_trace(go.Scatter(x=pts['rt'], y=pts['int'], mode='markers'))
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
