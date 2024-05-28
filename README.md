@@ -2,7 +2,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](http://colab.research.google.com/github/computational-chemical-biology/regression_filter/blob/main/notebooks/regression_filter.ipynb)
 
 <p align="center">
-  <img src="https://github.com/computational-chemical-biology/blob/main/img/logo.png" alt="logo"/>
+  <img src="https://github.com/gsarini/regression_filter/blob/main/logo/regfilter_logo.png" alt="logo" height="230" width="230"/>
 </p>
 
 ## Installation
