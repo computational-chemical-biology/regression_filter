@@ -18,7 +18,7 @@ bash Miniconda3-latest-Linux-x86_64.sh
 Create a dedicated conda environment and activate
 
 ```
-conda env create -f environment.yml
+conda env create -f regfilter_env.yml
 conda activate regfilter 
 pip install git+https://github.com/computational-chemical-biology/regression_filter.git
 ```
