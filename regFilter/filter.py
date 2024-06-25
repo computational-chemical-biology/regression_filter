@@ -93,11 +93,21 @@ class Filter:
                 return 0
 
 
-    def filterFeatures(self, npts=None, r2=0.9, sig='-'):
+    def filterFeatures(self, npts=None, r2=0.9, sig='-', quant=''):
         sel = self.feat_area.apply(lambda a: self.filterReg(a.name, npts=npts, r2=r2, sig=sig))
 
         self.sel = sel
+        
+        quant_df = pd.read_csv(quant)
 
-        print('Numeber of fearures:', len(sel))
-        print('Numeber of fearures after filtering:', sel.sum())
+        df_f = quant_df.merge(sel.rename('filtered'), left_index=True, right_index=True)
+        df_f2 = df_f[["filtered","row ID","row m/z","row retention time"]]
+        df_filtered = df_f2.loc[df_f2['filtered'] == 1]
+        df_filtered = df_filtered[["row ID","row m/z","row retention time"]]
+        df_filtered.reset_index(drop=True)
+        df_filtered.to_csv("./filtered.csv", index=False)
+
+        print('Number of features:', len(sel))
+        print('Number of features after filtering:', sel.sum())
+
 
