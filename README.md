@@ -25,10 +25,8 @@ pip install git+https://github.com/computational-chemical-biology/regression_fil
 
 ## Using the filter itself
 
-Once installed, access the Python notebook building_spl_and_assessing_XIC_for_all_ions.ipynb to access the filtering algorithm. Enter the path where your .csv file is located and execute the cells as indicated in the notebook itself. After selecting the number of points to filter (npts=) and performing the feature filtering, a new .csv file with the features that meet the desired criteria will be exported to the notebooks directory of the package installed on your machine.
+Once installed, access the Python notebook [building_spl_and_assessing_XIC_for_all_ions.ipynb](notebooks/building_spl_and_assessing_XIC_for_all_ions.ipynb) to access the filtering algorithm. Enter the path where your .csv file is located and execute the cells as indicated in the notebook itself. After selecting the number of points to filter (npts=) and performing the feature filtering, a new .csv file with the features that meet the desired criteria will be exported to the notebooks directory of the package installed on your machine.
 
-```
-   
 
 ### License
 
